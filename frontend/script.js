@@ -42,7 +42,32 @@ async function loadTasks() {
 
             taskElement.appendChild(checkbox);
 taskElement.appendChild(taskTitle);
+const editButton = document.createElement("button");
+editButton.textContent = "✏️";
+editButton.className = "edit-task";
 
+editButton.addEventListener("click", async () => {
+    const newTitle = prompt("Изменить задачу:", task.title);
+
+    if (!newTitle || !newTitle.trim()) {
+        return;
+    }
+
+    await fetch(`/tasks/${task.id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            title: newTitle.trim(),
+            completed: task.completed
+        })
+    });
+
+    loadTasks();
+});
+
+taskElement.appendChild(editButton);
 const deleteButton = document.createElement("button");
 deleteButton.textContent = "🗑️";
 deleteButton.className = "delete-task";
